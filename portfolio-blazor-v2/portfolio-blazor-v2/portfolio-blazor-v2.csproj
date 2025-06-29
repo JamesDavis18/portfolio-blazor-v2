@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\portfolio-blazor-v2.Client\portfolio-blazor-v2.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.*" />
+    <PackageReference Include="MudBlazor" Version="8.8.0" />
   </ItemGroup>
 
 </Project>
