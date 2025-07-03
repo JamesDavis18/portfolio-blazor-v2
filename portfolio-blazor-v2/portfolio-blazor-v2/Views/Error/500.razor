@@ -1,7 +1,6 @@
-﻿<!-- Error404.razor -->
-<h3>_404</h3>
+﻿<!-- error 500.razor-->
+<h3>_500</h3>
 @using Microsoft.AspNetCore.Components
-@using Microsoft.Extensions.Hosting
 @using portfolio_blazor_v2.Client.Pages
 @using MudBlazor
 @inject NavigationManager Navigator
@@ -10,28 +9,41 @@
 <div id="blazor-error-ui" data-nosnippet>
     @if (Environment.IsProduction())
     {
-        <span>Page not found</span>
+        <span>Internal Server Error</span>
     }
     else
     {
         <p>Something went wrong. Please check the console for more details.</p>
     }
-
     <a href="" class="reload">Reload</a>
     <a href="/" class="home">Home</a>  
     <a class="dismiss">🗙</a>
 )
     <MudPaper Class="d-flex flex-column align-center justify-center" Height="MaxHeight.Medium" Width="100%">
         <MudContainer MaxWidth="MaxWidth.Medium" Class="mt-10 text-center">
-            <MudText Typo="Typo.h2" Color="Color.Error">404 - Page not found</MudText>
+            <MudText Typo="Typo.h2" Color="Color.Error">An error occurred when processing your request</MudText>
             <svg xmlns="Images/alert-error.svg" style="display:inherit" />
-            <MudText Typo="Typo.subtitle1">404 - The page you're looking for does not exist.</MudText>
+            <MudText Typo="Typo.subtitle1">The page you're looking for does not exist.</MudText>
             <MudText Typo="Typo.subtitle1">Press here to return home</MudText>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@GoHome">Go Home</MudButton>
         </MudContainer>
     </MudPaper>
 </div>
-
 @code {
     void GoHome() => Navigator.NavigateTo("/");
+
+@*     protected override void OnInitialized()
+    {
+        NavigationManager.OnLocationChanged += OnLocationChanged;
+        base.OnInitialized();
+        // Additional initialization logic can go here if needed
+    }
+
+    void OnLocationChanged(object? sender, Microsoft.AspNetCore.Components.Routing.LocationChangedEventArgs e)
+    {
+        string navigationMethod = e.IsNavigationIntercepted ? "HTML" : "code";
+        System.Diagnostics.Debug.WriteLine($"Nofication of navigation via {navigationMethod} to {e.Location}");
+        // Handle location changes if necessary
+        // For example, you could log the new URL or perform some action based on the new location
+    } *@
 }

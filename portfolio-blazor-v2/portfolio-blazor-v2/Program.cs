@@ -1,4 +1,5 @@
 using MudBlazor.Services;
+using portfolio_blazor_v2;
 using portfolio_blazor_v2.Client.Pages;
 using portfolio_blazor_v2.Components;
 
@@ -11,6 +12,7 @@ builder.Services.AddLocalization();
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveWebAssemblyComponents();
+builder.Services.AddScoped<NavigationSubscriber>();
 
 var app = builder.Build();
 

@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
+using portfolio_blazor_v2.Client;
+using portfolio_blazor_v2;
 
 public class Program
 {

@@ -1,0 +1,14 @@
+@using Microsoft.AspNetCore.Components
+@using portfolio_blazor_v2.Client.Pages
+@using MudBlazor
+@inject NavigationManager Navigator
+@inject IWebHostEnvironment Environment
+
+@if (Environment.IsProduction())
+{
+    <span>Internal Server Error</span>
+}
+else
+{
+    <p>Something went wrong. Please check the console for more details.</p>
+}
