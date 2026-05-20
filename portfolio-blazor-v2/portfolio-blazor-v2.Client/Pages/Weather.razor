@@ -1,11 +1,52 @@
 ﻿@page "/weather"
-
-
+@inject IJSRuntime JSRuntime
+@using MudBlazor
 
 <PageTitle>Weather</PageTitle>
 
 <MudText Typo="Typo.h3" GutterBottom="true">Weather forecast</MudText>
 <MudText Typo="Typo.body1" Class="mb-8">This component demonstrates fetching data from the server.</MudText>
+<MudContainer MaxWidth="MaxWidth.Medium" Class="mt-8">
+    <MudText Typo="Typo.h6" class="mb-4">Use your location</MudText>
+</MudContainer>
+<MudBadge Color="Color.Secondary" Variant="Variant.Filled" Class="mb-4">
+    <MudButton ButtonType="ButtonType.Button"
+        Variant="Variant.Filled"
+        StartIcon="@Icons.Material.Filled.MyLocation"
+        Disabled="_isSearching"
+        Class="mb-4">
+        Test Button
+    </MudButton>
+</MudBadge>
+
+{{!--Location Section}}
+<MudText Typo="Typo.h6" Class="mb-2">Use yoour location</MudText>
+<MudBadge Color="Color.Secondary" Variant="Variant.Filled" Class="mb-4">
+    <MudButton ButtonType="ButtonType.Button"
+        Variant="Variant.Filled"
+        StartIcon="@Icons.Material.Filled.EditLocation"
+        Disabled="_isSearching"
+        OnClick="GetLocationAsync"
+        Class="mb-4">
+    @(_isSearching ? "Setting location..." : "Set Location")
+    </MudButton>
+
+    @if (!string.IsNullOrEmpty(_errorMessage))
+    {
+        <MudAlert Severity="Severity.Error" Class="mb-4">@_errorMessage</MudAlert>
+    }
+
+    @if (_coords != null)
+    {
+        <MudAlert Severity="Severity.Success" Class="mb-4" StartIcon="@Icons.Material.Filled.MyLocation">
+            Location set - Latitude: @_coords.Latitude.ToString("F4"),
+            Longitude: @_coords.Longitude.ToString("F4"),
+            Accuracy: @_coords.Accuracy.ToString("F4"),
+            Altitude: @_coords.Altitude?.ToString("F4")
+        </MudAlert>
+    }
+
+</MudBadge>
 
 @if (forecasts == null)
 {
@@ -19,12 +60,14 @@ else
             <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureC)">Temp. (C)</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.TemperatureF)">Temp. (F)</MudTableSortLabel></MudTh>
             <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.Summary!)">Summary</MudTableSortLabel></MudTh>
+            <MudTh><MudTableSortLabel SortBy="new Func<WeatherForecast, object>(x=>x.Location!">Location</MudTableSortLabel></MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Date">@context.Date</MudTd>
             <MudTd DataLabel="Temp. (C)">@context.TemperatureC</MudTd>
             <MudTd DataLabel="Temp. (F)">@context.TemperatureF</MudTd>
             <MudTd DataLabel="Summary">@context.Summary</MudTd>
+            <MudTd DataLabel="Location">@context.LocationName</MudTd>
         </RowTemplate>
         <PagerContent>
             <MudTablePager PageSizeOptions="new int[]{50, 100}" />
@@ -33,7 +76,33 @@ else
 }
 
 @code {
+    private bool _isSearching;
+    private string? _errorMessage;
     private WeatherForecast[]? forecasts;
+    private LocationCoordinates? _coords;
+
+    private async Task GetLocationAsync()
+    {
+        _isSearching = true;
+        _errorMessage = null;
+
+        try
+        {
+            _coords = await JSRuntime.InvokeAsync<LocationCoordinates>("getLocation");
+        }
+        catch(JSException jsEx)
+        {
+            _errorMessage = $"Could not get location: {jsEx.Message}";
+        }
+        catch(Exception ex)
+        {
+            _errorMessage = $"Unexpected error: {ex.Message}";
+        }
+        finally
+        {
+            _isSearching = false;
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,12 +110,13 @@ else
         await Task.Delay(500);
 
         var startDate = DateOnly.FromDateTime(DateTime.Now);
-        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching" };
+        var summaries = new[] { "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Heatwave" };
         forecasts = Enumerable.Range(1, 5).Select(index => new WeatherForecast
         {
             Date = startDate.AddDays(index),
             TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = summaries[Random.Shared.Next(summaries.Length)]
+            Summary = summaries[Random.Shared.Next(summaries.Length)],
+            LocationName = "Not Set"
         }).ToArray();
     }
 
@@ -56,5 +126,16 @@ else
         public int TemperatureC { get; set; }
         public string? Summary { get; set; }
         public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        public string? LocationName { get; set; }
+
     }
+
+    private class LocationCoordinates
+    {
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
+        public double Accuracy { get; set; }
+        public double? Altitude { get; set; }
+    }
+
 }

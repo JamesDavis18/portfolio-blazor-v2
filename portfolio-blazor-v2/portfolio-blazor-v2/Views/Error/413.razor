@@ -4,11 +4,13 @@
 @inject NavigationManager Navigator
 @inject IWebHostEnvironment Environment
 
-@if (Environment.IsProduction())
-{
-    <span>Internal Server Error</span>
-}
-else
-{
-    <p>Something went wrong. Please check the console for more details.</p>
-}
+<div id="blazer-error-ui" data-nosnippet>
+    @if (Environment.IsProduction())
+    {
+        <span>Internal Server Error</span>
+    }
+    else
+    {
+        <p>Something went wrong. Please check the console for more details.</p>
+    }
+</div>

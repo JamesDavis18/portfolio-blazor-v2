@@ -1,9 +1,41 @@
 ﻿@page "/"
+<MudThemeProvider />
+    <MudLayout>
+        <MudAppBar Elevation="1" Color="Color.Primary" Gutters="true" Fixed="true">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudText Align="Align.Left" Typo="Typo.h5" Class="ml-3">Application</MudText>
+            <MudSpacer />
+            <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Color="Color.Inherit" Edge="Edge.End" />
+        </MudAppBar>
+        <MudDrawer @bind-open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+            <MudNavMenu>
+                @*NavMenu*@
+                <MudNavLink Href="/Projects"/>
+            </MudNavMenu>
+            <MudMainContent>
+                @*Body*@
+            </MudMainContent>
+        </MudDrawer>
+    </MudLayout>
 
 <PageTitle>Home</PageTitle>
 
-<MudText Typo="Typo.h3" GutterBottom="true">Hello, world!</MudText>
-<MudText Class="mb-8">Welcome to your new app, powered by MudBlazor and the .NET 9 Template!</MudText>
+<MudText Typo="Typo.h1">James Peter Davis: Portfolio</MudText>
+<MudText Typo="Typo.h3" GutterBottom="true">Software/Web Developer, Tester & QA Analyst</MudText>
+<MudText Class="mb-10">Specialising in .NET applications</MudText>
+
+<MudText Typo="Typo.h3">Experience</MudText>
+<MudAlert Severity="Severity.Info" ContentAlignment="HorizontalAlignment.Start">
+    <MudText Typo="Typo.h3" GutterBottom="true">LapSafe Self Service Solutions</MudText>
+    <MudChip T="string" Color="Color.Secondary">7 Months</MudChip><MudChip T="string" Color="Color.Secondary">Current</MudChip>
+</MudAlert>
+<MudSpacer />
+<MudAlert Severity="Severity.Info" ContentAlignment="HorizontalAlignment.Start">
+    <MudText Typo="Typo.h3" GutterBottom="true">D-Tech International Ltd</MudText>
+    <MudChip T="string" Color="Color.Secondary">4 Years 6 Months</MudChip>
+</MudAlert>
+
+<MudText Typo="Typo.h3"></MudText>
 
 <MudAlert Severity="Severity.Normal" ContentAlignment="HorizontalAlignment.Start">
     You can find documentation and examples on our website here:
@@ -57,3 +89,12 @@
         More details
     </MudLink>
 </MudText>
+
+@code{
+    private bool _drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        _drawerOpen = !_drawerOpen;
+    }
+}
